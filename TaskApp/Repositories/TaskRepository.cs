@@ -51,8 +51,7 @@ namespace TaskApp.Repositories
         {
             var tasks = await _context.Tasks.ToListAsync();
             return tasks.Any() ? tasks.Max(t => t.Id) : 0;
-            
         }
-
+      
     }
 }

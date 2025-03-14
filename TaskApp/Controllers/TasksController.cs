@@ -89,5 +89,29 @@ namespace TaskApp.Controllers
                 data = ""
             });
         }
+        [HttpPatch("{id}/complete")]
+        public async Task<ActionResult> UpdateTaskStatus(int id, [FromBody] bool isCompleted)
+        {
+            // Obtener la tarea existente
+            var existingTask = await _service.GetTaskByIdAsync(id);
+
+            if (existingTask == null)
+            {
+                return NotFound(new { message = $"Tarea con Id {id} no encontrada" });
+            } 
+
+            // Actualiza el estado
+            existingTask.IsCompleted = isCompleted;
+
+            // Guarda los cambios
+            await _service.UpdateTaskAsync(existingTask);
+
+            return Ok(new
+            {
+                message = $"Estado de la tarea {id} actualizado a {(isCompleted ? "Completado" : "Pendiente")}",
+                data = existingTask
+            });
+        }
+
     }
 }
