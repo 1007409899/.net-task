@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TaskApp.Dtos;
 using TaskApp.Models;
 using TaskApp.Services;
 
@@ -67,7 +68,7 @@ namespace TaskApp.Controllers
             // Actualizar propiedades directamente en la instancia ya rastreada
             existingTask.Title = task.Title;
             existingTask.Description = task.Description;
-            existingTask.IsCompleted = task.IsCompleted;
+            existingTask.State = task.State;
 
             await _service.UpdateTaskAsync(existingTask);
 
@@ -90,7 +91,7 @@ namespace TaskApp.Controllers
             });
         }
         [HttpPatch("{id}/complete")]
-        public async Task<ActionResult> UpdateTaskStatus(int id, [FromBody] bool isCompleted)
+        public async Task<ActionResult> UpdateTaskStatus(int id, [FromBody] UpdateTaskEstadoDto dto)
         {
             // Obtener la tarea existente
             var existingTask = await _service.GetTaskByIdAsync(id);
@@ -101,16 +102,22 @@ namespace TaskApp.Controllers
             } 
 
             // Actualiza el estado
-            existingTask.IsCompleted = isCompleted;
+            existingTask.State = dto.State;
 
             // Guarda los cambios
             await _service.UpdateTaskAsync(existingTask);
 
             return Ok(new
             {
-                message = $"Estado de la tarea {id} actualizado a {(isCompleted ? "Completado" : "Pendiente")}",
+                message = $"Estado de la tarea {id} actualizado a {dto.State}",
                 data = existingTask
             });
+        }
+        [HttpGet("by-status")]
+        public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasksByStatus([FromQuery] UpdateTaskEstadoDto dto)
+        {
+            var tasks = await _service.GetTasksByStatus(dto.State);
+            return Ok(tasks);
         }
 
     }

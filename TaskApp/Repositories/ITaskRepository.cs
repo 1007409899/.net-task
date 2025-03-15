@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TaskApp.Enums;
 using TaskApp.Models;
 
 namespace TaskApp.Repositories
@@ -14,5 +15,6 @@ namespace TaskApp.Repositories
         Task UpdateAsync(TaskItem task);
         Task DeleteAsync(int id);
         Task<int> GetMaxIdAsync();
+        Task<IEnumerable<TaskItem>> GetTasksByStatus(StateTask state);
     }
 }

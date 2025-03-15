@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TaskApp.Data;
 using TaskApp.Repositories;
 using TaskApp.Services;
@@ -40,8 +42,14 @@ namespace TaskApp
             services.AddScoped<ITaskRepository, TaskRepository>();
             services.AddScoped<ITaskService, TaskService>();
 
-            services.AddControllers();
-
+            services.AddControllers()
+                      .AddJsonOptions(options =>
+                      {
+                            // Esto habilita la conversión del enum a string
+                            options.JsonSerializerOptions.Converters.Add(
+                              new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                          );
+                      });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TaskApp.Enums;
 using TaskApp.Models;
 using TaskApp.Repositories;
 
@@ -40,5 +41,8 @@ namespace TaskApp.Services
         }
 
         public async Task<int> GetMaxIdAsync() => await _repository.GetMaxIdAsync();
+
+        public async Task<IEnumerable<TaskItem>> GetTasksByStatus(StateTask state) => await _repository.GetTasksByStatus(state);
+
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TaskApp.Data;
+using TaskApp.Enums;
 using TaskApp.Models;
 
 namespace TaskApp.Repositories
@@ -52,6 +53,13 @@ namespace TaskApp.Repositories
             var tasks = await _context.Tasks.ToListAsync();
             return tasks.Any() ? tasks.Max(t => t.Id) : 0;
         }
-      
+        public async Task<IEnumerable<TaskItem>> GetTasksByStatus(StateTask state)
+        {
+            return await _context.Tasks
+             .Where(t => t.State == state)
+             .ToListAsync();
+            
+        }
+
     }
 }
